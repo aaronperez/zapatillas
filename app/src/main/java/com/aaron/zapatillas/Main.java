@@ -16,12 +16,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class Main extends Activity {
@@ -29,9 +31,11 @@ public class Main extends Activity {
     private ArrayList<Zapatillas> zapas = new ArrayList<Zapatillas>();
     private ListView lv;
     private Adaptador ad;
-    private Spinner spinnerM;
+    private Spinner spinner;
     private EditText et1, et2, et3;
     private Bitmap b1;
+    private TextView tvM, tvC, tvP;
+    private ImageView ivM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +79,8 @@ public class Main extends Activity {
         int id=item.getItemId();
         AdapterView.AdapterContextMenuInfo info= (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int index= info.position;
-        Object o= info.targetView.getTag();
-        Adaptador.ViewHolder vh;
-        vh = (Adaptador.ViewHolder)o;
         if (id == R.id.action_eliminar) {
-            tostada(index + " " + vh.tvM.getText().toString());
-            zapas.remove(index);
+            eliminar(index);
             ad.notifyDataSetChanged();
             return true;
         }else if (id == R.id.action_editar) {
@@ -100,17 +100,32 @@ public class Main extends Activity {
         ad = new Adaptador(this, R.layout.elemento, zapas);
         lv = (ListView) findViewById(R.id.lvLista);
         lv.setAdapter(ad);
-        //String[] Marca=new String[]{"adidas","asics","brooks","mizuno","new balance","nike","saucony"};
-        //ArrayAdapter<String> movieAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Marca);
-        spinnerM=(Spinner)findViewById(R.id.spinnerM);
-        //spinnerM.setAdapter(movieAdapter);
         registerForContextMenu(lv);
      }
+
+    /*  Método para iniciar Spinner y escucharlo  */
+    /**********************************************/
+    private void iniciarSpinner(){
+        AdapterView.OnItemSelectedListener onSpinner =new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view,int position,long id) {
+                    tostada(spinner.getSelectedItem().toString());
+                }
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {}
+         };
+        ArrayAdapter<CharSequence> stringArrayAdapter=ArrayAdapter.createFromResource(this,R.array.Marca,android.R.layout.simple_spinner_dropdown_item);
+        //stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner =(Spinner)findViewById(R.id.spinnerM);
+        spinner.setAdapter(stringArrayAdapter);
+        spinner.setOnItemSelectedListener(onSpinner);
+}
+
 
     /* Método que convierte la posición en
     * el spinner en la imagen que le corresponde*/
     private Bitmap spinnerBitmap(int n){
-        int opcion=spinnerM.getSelectedItemPosition();
+        int opcion=n;
         Log.v("Posicion",getString(opcion));
         switch(opcion){
             case 0:
@@ -135,15 +150,14 @@ public class Main extends Activity {
                 b1=BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.saucony);
                 break;
             }
-        b1=BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.adidas);
         return b1;
     }
 
     //rellenamos algunos elementos del ArrayList para que se vea algo
     private void nuevas(){
         zapas.add(new Zapatillas("Adidas Riot 5","Montaña, pronador","70-90",BitmapFactory.decodeResource(this.getResources(),R.drawable.adidas)));
-        zapas.add(new Zapatillas("Nike Pegasus","Asfalto, pronador","60-80",BitmapFactory.decodeResource(this.getResources(),R.drawable.nike)));
         zapas.add(new Zapatillas("Asics Gel Pulse 6","Asfalto, pronador","65-75", BitmapFactory.decodeResource(this.getResources(),R.drawable.asics)));
+        zapas.add(new Zapatillas("Nike Pegasus","Asfalto, pronador","60-80",BitmapFactory.decodeResource(this.getResources(),R.drawable.nike)));
         zapas.add(new Zapatillas("New Balance 770 v4","Asfalto, pronador/neutro","70-75",BitmapFactory.decodeResource(this.getResources(),R.drawable.newbalance)));
         zapas.add(new Zapatillas("Mizuno Wave Ultima 6","Asfalto, neutro","70-80",BitmapFactory.decodeResource(this.getResources(),R.drawable.mizuno)));
         zapas.add(new Zapatillas("Saucony Virrata 2","Asfalto, neutro, drop 0","60-80", BitmapFactory.decodeResource(this.getResources(),R.drawable.saucony)));
@@ -157,8 +171,9 @@ public class Main extends Activity {
     /*        Menús          */
     /*************************/
     public void agregar(){
+        iniciarSpinner();
         AlertDialog.Builder alert= new AlertDialog.Builder(this);
-        alert.setTitle("Editar zapatilla");
+        alert.setTitle("Agregar zapatilla");
         LayoutInflater inflater= LayoutInflater.from(this);
         final View vista = inflater.inflate(R.layout.edicion, null);
         alert.setView(vista);
@@ -167,11 +182,10 @@ public class Main extends Activity {
                 et1 = (EditText) vista.findViewById(R.id.etModelo);
                 et2 = (EditText) vista.findViewById(R.id.etUsos);
                 et3 = (EditText) vista.findViewById(R.id.etPeso);
-                Log.v("POSICION", spinnerM.getSelectedItem().toString());
-                Log.v("POSICION",getString(spinnerM.getSelectedItemPosition()));
-                //b1=spinnerBitmap(spinnerM.getSelectedItemPosition());
-                String c= spinnerM.getSelectedItem().toString()+" "+et1.getText().toString();
+                b1=spinnerBitmap(spinner.getSelectedItemPosition());
+                String c= spinner.getSelectedItem().toString()+" "+et1.getText().toString();
                 zapas.add(new Zapatillas(c,et2.getText().toString(),et3.getText().toString(),b1));
+                ordenar();
                 ad.notifyDataSetChanged();
                 tostada("Elemento añadido");
             }
@@ -183,20 +197,24 @@ public class Main extends Activity {
     public void editar(int x){
         final int x2=x;
         AlertDialog.Builder alert= new AlertDialog.Builder(this);
-        alert.setTitle("Alta");
+        alert.setTitle("Editar zapatilla");
         LayoutInflater inflater= LayoutInflater.from(this);
         final View vista = inflater.inflate(R.layout.edicion, null);
         alert.setView(vista);
+        et1=(EditText)findViewById(R.id.etModelo);
+        et2=(EditText)findViewById(R.id.etUsos);
+        et3=(EditText)findViewById(R.id.etPeso);
         et1.setText(zapas.get(x2).getModelo().toString());
         et2.setText(zapas.get(x2).getCaract().toString());
         et3.setText(zapas.get(x2).getPeso().toString());
-        spinnerM.setSelection(x2);
+        spinner.setSelection(x2);
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 zapas.get(x2).setModelo(et1.getText().toString());
-                zapas.get(x2).setMarca(spinnerBitmap(spinnerM.getSelectedItemPosition()));
+                zapas.get(x2).setMarca(spinnerBitmap(spinner.getSelectedItemPosition()));
                 zapas.get(x2).setCaract(et2.getText().toString());
                 zapas.get(x2).setPeso(et3.getText().toString());
+                ordenar();
                 ad.notifyDataSetChanged();
                 tostada("Elemento editado");
             }
@@ -204,4 +222,35 @@ public class Main extends Activity {
         alert.setNegativeButton("cancelar",null);
         alert.show();
     }
+
+    public void eliminar(int n){
+        final int x=n;
+        AlertDialog.Builder alert= new AlertDialog.Builder(this);
+        alert.setTitle("Eliminar zapatilla?");
+        LayoutInflater inflater= LayoutInflater.from(this);
+        final View vista = inflater.inflate(R.layout.elemento, null);
+        tvM=(TextView)findViewById(R.id.tvModelo);
+        tvC=(TextView)findViewById(R.id.tvCaracteristicas);
+        tvP=(TextView)findViewById(R.id.tvPeso);
+        ivM=(ImageView)findViewById(R.id.ivMarca);
+        tvM.setText(zapas.get(x).getModelo().toString());
+        tvC.setText(zapas.get(x).getCaract().toString());
+        tvP.setText(zapas.get(x).getPeso().toString());
+        ivM.setImageBitmap(zapas.get(x).getMarca());
+        alert.setView(vista);
+        alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                zapas.remove(x);
+                ad.notifyDataSetChanged();
+                tostada("Elemento eliminado");
+            }
+        });
+        alert.setNegativeButton(R.string.cancelar,null);
+        alert.show();
+    }
+
+    public void ordenar(){
+        Collections.sort(zapas);
+    }
 }
+

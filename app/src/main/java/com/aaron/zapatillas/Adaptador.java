@@ -33,7 +33,7 @@ public class Adaptador extends ArrayAdapter<Zapatillas> {
 
     public class ViewHolder{
         public TextView tvM,tvC,tvP;
-        public ImageView ivM,ivF;
+        public ImageView ivM;
         public int posicion;
     }
 
@@ -54,10 +54,10 @@ public class Adaptador extends ArrayAdapter<Zapatillas> {
         else{
             vh=(ViewHolder)convertView.getTag();
         }
-        vh.tvM.setText(zapas.get(zapas.size()-1-position).getModelo());
-        vh.tvC.setText(zapas.get(zapas.size()-1-position).getCaract());
-        vh.tvP.setText(zapas.get(zapas.size()-1-position).getPeso());
-        vh.ivM.setImageBitmap(zapas.get(zapas.size()-1-position).getMarca());
+        vh.tvM.setText(zapas.get(position).getModelo());
+        vh.tvC.setText(zapas.get(position).getCaract());
+        vh.tvP.setText(zapas.get(position).getPeso());
+        vh.ivM.setImageBitmap(zapas.get(position).getMarca());
         vh.posicion=position;
         return convertView;
     }
