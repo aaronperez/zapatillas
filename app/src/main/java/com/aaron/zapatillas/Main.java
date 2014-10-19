@@ -79,12 +79,12 @@ public class Main extends Activity {
         int id=item.getItemId();
         AdapterView.AdapterContextMenuInfo info= (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int index= info.position;
-        if (id == R.id.action_eliminar) {
-            eliminar(index);
+        if (id == R.id.action_editar) {
+            editar(index);
             ad.notifyDataSetChanged();
             return true;
-        }else if (id == R.id.action_editar) {
-            editar(index);
+        }else if (id == R.id.action_eliminar) {
+            eliminar(index);
             ad.notifyDataSetChanged();
             return true;
         }
@@ -117,8 +117,8 @@ public class Main extends Activity {
         ArrayAdapter<CharSequence> stringArrayAdapter=ArrayAdapter.createFromResource(this,R.array.Marca,android.R.layout.simple_spinner_dropdown_item);
         //stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner =(Spinner)findViewById(R.id.spinnerM);
-        spinner.setAdapter(stringArrayAdapter);
-        spinner.setOnItemSelectedListener(onSpinner);
+        //spinner.setAdapter(stringArrayAdapter);
+        //spinner.setOnItemSelectedListener(onSpinner);
 }
 
 
@@ -201,13 +201,14 @@ public class Main extends Activity {
         LayoutInflater inflater= LayoutInflater.from(this);
         final View vista = inflater.inflate(R.layout.edicion, null);
         alert.setView(vista);
-        et1=(EditText)findViewById(R.id.etModelo);
-        et2=(EditText)findViewById(R.id.etUsos);
-        et3=(EditText)findViewById(R.id.etPeso);
-        et1.setText(zapas.get(x2).getModelo().toString());
-        et2.setText(zapas.get(x2).getCaract().toString());
-        et3.setText(zapas.get(x2).getPeso().toString());
-        spinner.setSelection(x2);
+        final EditText et1=(EditText)findViewById(R.id.etModelo);
+        final EditText et2=(EditText)findViewById(R.id.etUsos);
+        final EditText et3=(EditText)findViewById(R.id.etPeso);
+        Log.v("X2",String.valueOf(x2));
+        //et1.setText(zapas.get(x2).getModelo());
+        //et2.setText(zapas.get(x2).getCaract());
+        //et3.setText(zapas.get(x2).getPeso());
+        //spinner.setSelection(x2);
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 zapas.get(x2).setModelo(et1.getText().toString());
