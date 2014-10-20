@@ -21,6 +21,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -105,7 +107,7 @@ public class Main extends Activity {
 
     /*  Método para iniciar Spinner y escucharlo  */
     /**********************************************/
-    private void iniciarSpinner(){
+    private void iniciarSpinner(View v){
         AdapterView.OnItemSelectedListener onSpinner =new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view,int position,long id) {
@@ -116,9 +118,9 @@ public class Main extends Activity {
          };
         ArrayAdapter<CharSequence> stringArrayAdapter=ArrayAdapter.createFromResource(this,R.array.Marca,android.R.layout.simple_spinner_dropdown_item);
         //stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner =(Spinner)findViewById(R.id.spinnerM);
-        //spinner.setAdapter(stringArrayAdapter);
-        //spinner.setOnItemSelectedListener(onSpinner);
+        spinner =(Spinner)v.findViewById(R.id.spinnerM);
+        spinner.setAdapter(stringArrayAdapter);
+        spinner.setOnItemSelectedListener(onSpinner);
 }
 
 
@@ -126,7 +128,6 @@ public class Main extends Activity {
     * el spinner en la imagen que le corresponde*/
     private Bitmap spinnerBitmap(int n){
         int opcion=n;
-        Log.v("Posicion",getString(opcion));
         switch(opcion){
             case 0:
                 b1=BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.adidas);
@@ -171,12 +172,13 @@ public class Main extends Activity {
     /*        Menús          */
     /*************************/
     public void agregar(){
-        iniciarSpinner();
+
         AlertDialog.Builder alert= new AlertDialog.Builder(this);
         alert.setTitle("Agregar zapatilla");
         LayoutInflater inflater= LayoutInflater.from(this);
         final View vista = inflater.inflate(R.layout.edicion, null);
         alert.setView(vista);
+        iniciarSpinner(vista);
         alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 et1 = (EditText) vista.findViewById(R.id.etModelo);
@@ -201,20 +203,28 @@ public class Main extends Activity {
         LayoutInflater inflater= LayoutInflater.from(this);
         final View vista = inflater.inflate(R.layout.edicion, null);
         alert.setView(vista);
-        final EditText et1=(EditText)findViewById(R.id.etModelo);
-        final EditText et2=(EditText)findViewById(R.id.etUsos);
-        final EditText et3=(EditText)findViewById(R.id.etPeso);
-        Log.v("X2",String.valueOf(x2));
-        //et1.setText(zapas.get(x2).getModelo());
-        //et2.setText(zapas.get(x2).getCaract());
-        //et3.setText(zapas.get(x2).getPeso());
-        //spinner.setSelection(x2);
+        iniciarSpinner(vista);
+        final EditText et1=(EditText)vista.findViewById(R.id.etModelo);
+        final EditText et2=(EditText)vista.findViewById(R.id.etUsos);
+        final EditText et3=(EditText)vista.findViewById(R.id.etPeso);
+        et1.setText(zapas.get(x2).getModelo());
+        et2.setText(zapas.get(x2).getCaract());
+        et3.setText(zapas.get(x2).getPeso());
+        for(int i=0;i<7;i++){
+            if(spinner.getItemAtPosition(i).toString().substring(0,3).equals(zapas.get(x2).getModelo().substring(0,3))){
+                spinner.setSelection(i);
+                break;
+            }
+        }
+        zapas.get(x2).getModelo().substring(0,3);
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 zapas.get(x2).setModelo(et1.getText().toString());
                 zapas.get(x2).setMarca(spinnerBitmap(spinner.getSelectedItemPosition()));
                 zapas.get(x2).setCaract(et2.getText().toString());
                 zapas.get(x2).setPeso(et3.getText().toString());
+                b1=spinnerBitmap(spinner.getSelectedItemPosition());
+                zapas.get(x2).setMarca(b1);
                 ordenar();
                 ad.notifyDataSetChanged();
                 tostada("Elemento editado");
