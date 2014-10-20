@@ -196,6 +196,7 @@ public class Main extends Activity {
         et1.setText(zapas.get(x2).getModelo());
         et2.setText(zapas.get(x2).getCaract());
         et3.setText(zapas.get(x2).getPeso());
+        tostada(getString(x2));
         for(int i=0;i<7;i++){
             if(spinner.getItemAtPosition(i).toString().substring(0,3).equals(zapas.get(x2).getModelo().substring(0,3))){
                 spinner.setSelection(i);
@@ -225,10 +226,10 @@ public class Main extends Activity {
         alert.setTitle("Eliminar zapatilla?");
         LayoutInflater inflater= LayoutInflater.from(this);
         final View vista = inflater.inflate(R.layout.elemento, null);
-        tvM=(TextView)findViewById(R.id.tvModelo);
-        tvC=(TextView)findViewById(R.id.tvCaracteristicas);
-        tvP=(TextView)findViewById(R.id.tvPeso);
-        ivM=(ImageView)findViewById(R.id.ivMarca);
+        tvM=(TextView)vista.findViewById(R.id.tvModelo);
+        tvC=(TextView)vista.findViewById(R.id.tvCaracteristicas);
+        tvP=(TextView)vista.findViewById(R.id.tvPeso);
+        ivM=(ImageView)vista.findViewById(R.id.ivMarca);
         tvM.setText(zapas.get(x).getModelo());
         tvC.setText(zapas.get(x).getCaract());
         tvP.setText(zapas.get(x).getPeso());
