@@ -1,21 +1,16 @@
 package com.aaron.zapatillas;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.aaron.zapatillas.R;
-import com.aaron.zapatillas.Zapatillas;
-
 import java.util.ArrayList;
 
 /**
- * Created by 2dam on 17/10/2014.
+ * Created by Aarón on 17/10/2014.
  */
 public class Adaptador extends ArrayAdapter<Zapatillas> {
     private Context contexto;
@@ -39,7 +34,7 @@ public class Adaptador extends ArrayAdapter<Zapatillas> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder vh= null;
+        ViewHolder vh;
         //El if entra cuando se crea el ViewHolder por primera vez
         if(convertView == null){
             convertView= i.inflate(recurso, null);

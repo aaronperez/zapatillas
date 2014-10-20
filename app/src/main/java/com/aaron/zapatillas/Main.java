@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,12 +20,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-
 
 public class Main extends Activity {
 
@@ -97,7 +92,6 @@ public class Main extends Activity {
     /*****************************/
 
     private void initComponents() {
-        //Log.v("URI", getString(@drawable/adidas));
         nuevas();
         ad = new Adaptador(this, R.layout.elemento, zapas);
         lv = (ListView) findViewById(R.id.lvLista);
@@ -110,25 +104,20 @@ public class Main extends Activity {
     private void iniciarSpinner(View v){
         AdapterView.OnItemSelectedListener onSpinner =new AdapterView.OnItemSelectedListener() {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view,int position,long id) {
-                    tostada(spinner.getSelectedItem().toString());
-                }
+        public void onItemSelected(AdapterView<?> parent, View view,int position,long id) {}
         @Override
         public void onNothingSelected(AdapterView<?> parent) {}
          };
         ArrayAdapter<CharSequence> stringArrayAdapter=ArrayAdapter.createFromResource(this,R.array.Marca,android.R.layout.simple_spinner_dropdown_item);
-        //stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner =(Spinner)v.findViewById(R.id.spinnerM);
         spinner.setAdapter(stringArrayAdapter);
         spinner.setOnItemSelectedListener(onSpinner);
 }
 
-
     /* Método que convierte la posición en
     * el spinner en la imagen que le corresponde*/
     private Bitmap spinnerBitmap(int n){
-        int opcion=n;
-        switch(opcion){
+        switch(n){
             case 0:
                 b1=BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.adidas);
                 break;
@@ -169,10 +158,9 @@ public class Main extends Activity {
     }
 
 
-    /*        Menús          */
+    /*     Menú  opciones    */
     /*************************/
     public void agregar(){
-
         AlertDialog.Builder alert= new AlertDialog.Builder(this);
         alert.setTitle("Agregar zapatilla");
         LayoutInflater inflater= LayoutInflater.from(this);
@@ -216,7 +204,6 @@ public class Main extends Activity {
                 break;
             }
         }
-        zapas.get(x2).getModelo().substring(0,3);
         alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 zapas.get(x2).setModelo(et1.getText().toString());
@@ -244,9 +231,9 @@ public class Main extends Activity {
         tvC=(TextView)findViewById(R.id.tvCaracteristicas);
         tvP=(TextView)findViewById(R.id.tvPeso);
         ivM=(ImageView)findViewById(R.id.ivMarca);
-        tvM.setText(zapas.get(x).getModelo().toString());
-        tvC.setText(zapas.get(x).getCaract().toString());
-        tvP.setText(zapas.get(x).getPeso().toString());
+        tvM.setText(zapas.get(x).getModelo());
+        tvC.setText(zapas.get(x).getCaract());
+        tvP.setText(zapas.get(x).getPeso());
         ivM.setImageBitmap(zapas.get(x).getMarca());
         alert.setView(vista);
         alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
