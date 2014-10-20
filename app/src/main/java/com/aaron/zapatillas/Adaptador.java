@@ -43,7 +43,6 @@ public class Adaptador extends ArrayAdapter<Zapatillas> {
             vh.tvC = (TextView)convertView.findViewById(R.id.tvCaracteristicas);
             vh.tvP = (TextView)convertView.findViewById(R.id.tvPeso);
             vh.ivM = (ImageView)convertView.findViewById(R.id.ivMarca);
-            //vh.ivF = (ImageView)convertView.findViewById(R.id.ivFoto);
             convertView.setTag(vh);
         }
         else{

@@ -153,9 +153,7 @@ public class Main extends Activity {
         zapas.add(new Zapatillas("Saucony Virrata 2","Asfalto, neutro, drop 0","60-80", BitmapFactory.decodeResource(this.getResources(),R.drawable.saucony)));
     }
 
-    private void tostada(String s){
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-    }
+    private void tostada(String s){Toast.makeText(this, s, Toast.LENGTH_SHORT).show();}
 
 
     /*     Menú  opciones    */
